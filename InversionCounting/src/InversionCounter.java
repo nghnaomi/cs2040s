@@ -1,16 +1,20 @@
 class InversionCounter {
 
     public static long countSwaps(int[] arr) {
-        long swaps = 0;
+        return counter(arr, 0, arr.length - 1);
+    }
 
-        for (int i = 0; i < arr.length - 1; i++) {
-            for (int j = i + 1; j < arr.length; j++) {
-                if (arr[i] > arr[j]) {
-                    swaps++;
-                }
-            }
+    public static long counter(int[] arr, int left, int right) {
+        long inv = 0;
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+            inv += counter(arr, left, mid)
+                    + counter(arr, mid + 1, right)
+                    + mergeAndCount(arr, left, mid, mid + 1, right);
+            return inv;
+        } else {
+            return inv;
         }
-        return swaps;
     }
 
     /**
@@ -19,18 +23,21 @@ class InversionCounter {
      * minimum amount of adjacent swaps needed to do so.
      */
     public static long mergeAndCount(int[] arr, int left1, int right1, int left2, int right2) {
-        int swaps = 0;
-        int i = left1;
-        int j = left2;
-        while (countSwaps(arr) != 0) {
+        long swaps = 0;
+        int i = left1, j = left2;
+        int[] sorted = new int[arr.length];
+
+        while (i <= right1 && j <= right2) {
             if (arr[i] > arr[j]) {
                 int temp = arr[j];
                 for (int c = j; c > i; c--) {
                     arr[c] = arr[c - 1];
-                    swaps++;
                 }
+                swaps += j - i;
                 arr[i] = temp;
+                i++;
                 j++;
+                right1++;
             } else {
                 i++;
             }
