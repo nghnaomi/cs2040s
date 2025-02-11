@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/InversionCounting/InversionCounting.iml" filepath="$PROJECT_DIR$/InversionCounting/InversionCounting.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WiFi/WiFi.iml" filepath="$PROJECT_DIR$/WiFi/WiFi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/cs2040s.iml" filepath="$PROJECT_DIR$/.idea/cs2040s.iml" />
+    </modules>
+  </component>
+</project>
