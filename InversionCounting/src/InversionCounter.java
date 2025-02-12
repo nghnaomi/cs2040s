@@ -1,7 +1,11 @@
+import java.util.Arrays;
+
 class InversionCounter {
 
     public static long countSwaps(int[] arr) {
-        return counter(arr, 0, arr.length - 1);
+        return (arr.length < 2 || arr == null)
+                ? 0
+                : counter(arr, 0, arr.length - 1);
     }
 
     public static long counter(int[] arr, int left, int right) {
@@ -24,24 +28,29 @@ class InversionCounter {
      */
     public static long mergeAndCount(int[] arr, int left1, int right1, int left2, int right2) {
         long swaps = 0;
-        int i = left1, j = left2;
-        int[] sorted = new int[arr.length];
+        int i = 0, j = 0, c = left1;
 
-        while (i <= right1 && j <= right2) {
-            if (arr[i] > arr[j]) {
-                int temp = arr[j];
-                for (int c = j; c > i; c--) {
-                    arr[c] = arr[c - 1];
-                }
-                swaps += j - i;
-                arr[i] = temp;
-                i++;
-                j++;
-                right1++;
+        int[] left = Arrays.copyOfRange(arr, left1, right1 + 1);
+        int[] right = Arrays.copyOfRange(arr, left2, right2 + 1);
+
+        while (i < left.length && j < right.length) {
+            if (left[i] <= right[j]) {
+                arr[c++] = left[i++];
             } else {
-                i++;
+                swaps += (left.length - i);
+                arr[c++] = right[j++];
             }
+        }
+
+        while (i < left.length) {
+            arr[c++] = left[i++];
+        }
+
+        while (j < right.length) {
+            arr[c++] = right[j++];
         }
         return swaps;
     }
+
 }
+

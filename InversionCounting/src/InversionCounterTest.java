@@ -17,6 +17,19 @@ public class InversionCounterTest {
     }
 
     @Test
+    public void countSwapsTest3() {
+        int[] arr = {5, 4, 3, 2, 1};
+        assertEquals(10L, InversionCounter.countSwaps(arr));
+    }
+
+    @Test
+    public void countSwapsTest4() {
+        int[] arr = {2, 0, 3, 4, 3, 1};
+        assertEquals(6L, InversionCounter.countSwaps(arr));
+    }
+
+
+    @Test
     public void mergeAndCountTest1() {
         int[] arr = {3, 1, 2};
         assertEquals(2L, InversionCounter.mergeAndCount(arr, 0, 0, 1, 2));
@@ -36,7 +49,7 @@ public class InversionCounterTest {
 
     @Test
     public void mergeAndCountTest4() {
-        int[] arr = {2, 3, 4, 5, 6, 7, 8};
-        assertEquals(0L, InversionCounter.mergeAndCount(arr, 0, 2, 3, 6));
+        int[] arr = {2, 2, 2, 2, 1, 2, 3};
+        assertEquals(4L, InversionCounter.mergeAndCount(arr, 0, 3, 4, 6));
     }
 }
