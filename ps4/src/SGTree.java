@@ -1,7 +1,3 @@
-import com.sun.source.tree.Tree;
-
-import java.util.Arrays;
-
 /**
  * Scapegoat Tree class
  *
@@ -84,20 +80,27 @@ public class SGTree {
         if (nodeList.length < 1) {
             return null;
         } else {
-            int mid = nodeList.length / 2;
-            TreeNode newTree = nodeList[mid];
-
-            newTree.left = buildTree(Arrays.copyOfRange(nodeList, 0, mid));
-            if (newTree.left != null) newTree.left.parent = newTree;
-
-            newTree.right = buildTree(Arrays.copyOfRange(nodeList, mid + 1, nodeList.length));
-            if (newTree.right != null) newTree.right.parent = newTree;
-
-            newTree.weight = 1 + countNodes(newTree.left) + countNodes(newTree.right);
-            return newTree;
+            return buildTreeHelper(nodeList, 0, nodeList.length - 1, null);
         }
     }
 
+    public TreeNode buildTreeHelper(TreeNode[] nodeList, int left, int right, TreeNode parent)
+    {
+        if (left > right) {
+            return null;
+        } else {
+            int mid = (left + right) / 2;
+            TreeNode newTree = nodeList[mid];
+            newTree.parent = parent;
+            newTree.left = buildTreeHelper(nodeList, left, mid - 1, newTree);
+            newTree.right = buildTreeHelper(nodeList, mid + 1, right, newTree);
+
+            newTree.weight = 1 + (newTree.left != null ? newTree.left.weight : 0) +
+                    (newTree.right != null ? newTree.right.weight : 0);
+
+            return newTree;
+        }
+    }
     /**
      * Determines if a node is balanced. If the node is balanced, this should return true. Otherwise, it should return
      * false. A node is unbalanced if either of its children has weight greater than 2/3 of its weight.
