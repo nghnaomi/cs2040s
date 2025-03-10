@@ -24,24 +24,24 @@ public class Trie {
     }
 
     public int findIndex(char c) {
-        if (c >= 'a' && c <= 'z') {
-            return c - 'a';
+        if (c >= '0' && c <= '9') {
+            return c - '0';
         } else if (c >= 'A' && c <= 'Z') {
-            return c - 'A' + 26;
-        } else if (c >= '0' && c <= '9') {
-            return c - '0' + 52;
+            return c - 'A' + 10;
+        } else if (c >= 'a' && c <= 'z') {
+            return c - 'a' + 36;
         } else {
             return -1;
         }
     }
 
     public char findChar(int index) {
-        if (index < 26) {
-            return (char) (index + 'a');
-        } else if (index < 52) {
-            return (char) (index + 'A' - 26);
+        if (index < 10) {
+            return (char) (index + '0');
+        } else if (index < 36) {
+            return (char) (index + 'A' - 10);
         } else if (index < 62){
-            return (char) (index + '0' - 52);
+            return (char) (index + 'a' - 36);
         } else {
             return '?';
         }
