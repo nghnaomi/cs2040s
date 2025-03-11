@@ -51,8 +51,12 @@ class Sorter {
     }
 
     public static boolean isGreaterThan(String str1, String str2) {
-        return str1.charAt(0) == str2.charAt(0)
-            ? str1.charAt(1) > str2.charAt(1)
-            : str1.charAt(0) > str2.charAt(0);
+        if (str1.charAt(0) != str2.charAt(0)) {
+            return str1.charAt(0) > str2.charAt(0);
+        }
+        if (str1.length() == 1 || str2.length() == 1) {
+            return str1.length() > str2.length();
+        }
+        return str1.charAt(1) > str2.charAt(1);
     }
 }
