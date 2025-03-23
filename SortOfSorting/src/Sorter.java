@@ -5,7 +5,8 @@ import java.util.Arrays;
 class Sorter {
 
     public static void sortStrings(String[] arr) {
-        if (arr.length > 2) {
+        // <2 case
+        if (arr.length >= 2) {
             sort(arr, 0, arr.length - 1);
         }
     }

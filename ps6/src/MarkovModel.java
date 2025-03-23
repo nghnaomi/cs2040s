@@ -57,11 +57,7 @@ public class MarkovModel {
 			return 0;
 		} else {
 			Map<Character, Integer> next = words.get(kgram);
-			int total = 0;
-			for (int v : next.values()) {
-				total += v;
-			}
-			return total;
+			return next.values().stream().mapToInt(Integer::intValue).sum();
 		}
 	}
 
