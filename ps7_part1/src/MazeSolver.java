@@ -158,7 +158,7 @@ public class MazeSolver implements IMazeSolver {
 	@Override
 	public Integer numReachable(int k) throws Exception {
 		// TODO: Find number of reachable rooms.
-		if (k < 0) {
+		if (k < 0 || k > rows * cols) {
 			throw new IllegalArgumentException("k must be positive");
 		}
 
