@@ -3,7 +3,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-public class MazeSolver implements IMazeSolver {
+public class MazeSolverWithPower implements IMazeSolverWithPower {
 	private static final int NORTH = 0, SOUTH = 1, EAST = 2, WEST = 3;
 	private static int[][] DELTAS = new int[][] {
 		{ -1, 0 }, // North
@@ -20,7 +20,7 @@ public class MazeSolver implements IMazeSolver {
 	private int[][] matrix;
 	private int[][] steps;
 
-	public MazeSolver() {
+	public MazeSolverWithPower() {
 		// TODO: Initialize variables.
 		solved = false;
 		maze = null;
@@ -173,15 +173,97 @@ public class MazeSolver implements IMazeSolver {
 		return count;
 	}
 
+	@Override
+	public Integer pathSearch(int startRow, int startCol, int endRow,
+							  int endCol, int superpowers) throws Exception {
+		// TODO: Find shortest path with powers allowed.
+		solved = false;
+
+		if (startRow < 0 || startRow >= rows || startCol < 0 || startCol >= cols ||
+				endRow < 0 || endRow >= rows || endCol < 0 || endCol >= cols) {
+			throw new IllegalArgumentException("invalid start/end");
+		}
+
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				visited[i][j] = false;
+				steps[i][j] = Integer.MAX_VALUE;
+				maze.getRoom(i, j).onPath = false;
+			}
+		}
+
+		Queue<int[]> queue = new LinkedList<>();
+		queue.add(new int[] { startRow, startCol, superpowers });
+		visited[startRow][startCol] = true;
+		steps[startRow][startCol] = 0;
+		int ans = 0;
+
+		Map<String, String> parent = new HashMap<>();
+		parent.put(startRow + "," + startCol + "," + superpowers, null);
+
+		while (!queue.isEmpty()) {
+			int[] present = queue.poll();
+			int row = present[0], col = present[1], remainingPowers = present[2];
+			int curr = row * cols + col;
+
+			if (row == endRow && col == endCol) {
+				solved = true;
+				maze.getRoom(startRow, startCol).onPath = true;
+				ans = tracePathPowers(parent, startRow, startCol, endRow, endCol);
+			}
+
+			for (int dir = 0; dir < 4; dir++) {
+				int nextRow = row + DELTAS[dir][0];
+				int nextCol = col + DELTAS[dir][1];
+
+				if (nextRow >= 0 && nextRow < rows && nextCol >= 0 && nextCol < cols) {
+					int nextRoom = nextRow * cols + nextCol;
+
+					if ((matrix[curr][nextRoom] == 1 || remainingPowers > 0)
+							&& !visited[nextRow][nextCol]) {
+						visited[nextRow][nextCol] = true;
+						steps[nextRow][nextCol] = steps[row][col] + 1;
+						int newPowers = matrix[curr][nextRoom] == 0 ? remainingPowers - 1 : remainingPowers;
+						queue.add(new int[]{nextRow, nextCol, newPowers});
+						parent.put(nextRow + "," + nextCol + "," + newPowers,
+								row + "," + col + "," + remainingPowers);
+					}
+				}
+			}
+		}
+		return solved ? ans : null;
+	}
+
+	private int tracePathPowers(Map<String, String> parent, int startRow, int startCol, int endRow, int endCol) {
+		String curr = null;
+		for (String key : parent.keySet()) {
+			String[] parts = key.split(",");
+			if (Integer.parseInt(parts[0]) == endRow &&
+					Integer.parseInt(parts[1]) == endCol) {
+				curr = key;
+				break;
+			}
+		}
+
+		int steps = 0;
+		while (curr != null) {
+			steps++;
+			String[] splitCurr = curr.split(",");
+			int row = Integer.parseInt(splitCurr[0]);
+			int col = Integer.parseInt(splitCurr[1]);
+			maze.getRoom(row, col).onPath = true;
+			curr = parent.get(curr);
+		}
+		return steps - 1;
+	}
+
 	public static void main(String[] args) {
-		// Do remember to remove any references to ImprovedMazePrinter before submitting
-		// your code!
 		try {
 			Maze maze = Maze.readMaze("maze-sample.txt");
-			IMazeSolver solver = new MazeSolver();
+			IMazeSolverWithPower solver = new MazeSolverWithPower();
 			solver.initialize(maze);
 
-			System.out.println(solver.pathSearch(0, 0, 2, 3));
+			System.out.println(solver.pathSearch(0, 0, 4, 1, 2));
 			MazePrinter.printMaze(maze);
 
 			for (int i = 0; i <= 9; ++i) {
