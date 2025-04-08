@@ -1,5 +1,7 @@
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.function.Function;
 
 public class MazeSolver implements IMazeSolver {
@@ -21,17 +23,71 @@ public class MazeSolver implements IMazeSolver {
 	private Maze maze;
 
 	public MazeSolver() {
-		// TODO: Initialize variables.
+		this.maze = maze;
 	}
 
 	@Override
 	public void initialize(Maze maze) {
-		// TODO: Initialize the solver.
+		this.maze = maze;
 	}
 
 	@Override
-	public Integer pathSearch(int startRow, int startCol, int endRow, int endCol) throws Exception {
-		// TODO: Find minimum fear level.
+	public Integer pathSearch(int startRow, int startCol, int endRow, int endCol) {
+		if (maze == null) {
+			return null;
+		}
+
+		int rows = maze.getRows();
+		int cols = maze.getColumns();
+
+		if (startRow < 0 || startCol < 0 || startRow >= rows || startCol >= cols ||
+				endRow < 0 || endCol < 0 || endRow >= rows || endCol >= cols) {
+			return null;
+		}
+
+		PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[2]));
+
+		int[][] minFear = new int[rows][cols];
+		for (int[] row : minFear) {
+			Arrays.fill(row, Integer.MAX_VALUE);
+		}
+
+		minFear[startRow][startCol] = 0;
+		pq.offer(new int[]{startRow, startCol, 0});
+
+		while (!pq.isEmpty()) {
+			int[] curr = pq.poll();
+			int row = curr[0];
+			int col = curr[1];
+			int fear = curr[2];
+
+			if (row == endRow && col == endCol) {
+				return fear;
+			} else if (fear > minFear[row][col]) {
+				continue;
+			}
+			
+			for (int direction = 0; direction < 4; direction++) {
+				int newRow = row + DELTAS[direction][0];
+				int newCol = col + DELTAS[direction][1];
+				
+				if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+					int wallValue = WALL_FUNCTIONS.get(direction).apply(maze.getRoom(row, col));
+
+					if (wallValue == TRUE_WALL) {
+						continue;
+					}
+
+					int fearIncrement = wallValue == EMPTY_SPACE ? 1 : wallValue;
+					int newFear = fear + fearIncrement;
+
+					if (newFear < minFear[newRow][newCol]) {
+						minFear[newRow][newCol] = newFear;
+						pq.offer(new int[]{newRow, newCol, newFear});
+					}
+				}
+			}
+		}
 		return null;
 	}
 

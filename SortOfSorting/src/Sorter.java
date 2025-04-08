@@ -1,44 +1,33 @@
-import org.w3c.dom.ls.LSOutput;
-
 import java.util.Arrays;
 
 class Sorter {
 
     public static void sortStrings(String[] arr) {
-        // <2 case
-        if (arr.length >= 2) {
-            sort(arr, 0, arr.length - 1);
+        if (arr == null || arr.length <= 1) {
+            return;
         }
+        sort(arr, 0, arr.length - 1);
     }
 
     public static void merge(String[] arr, int l, int m, int r) {
-        int i = l, j = m + 1, k = 0;
-        String[] temp = new String[r - l + 1];
-        for (int x = 0; x < temp.length; x++) {
-            temp[x] = arr[l + x];
-        }
+        String[] left = Arrays.copyOfRange(arr, l, m + 1);
+        String[] right = Arrays.copyOfRange(arr, m + 1, r + 1);
 
-        while (i <= m && j <= r) {
-            if (isGreaterThan(temp[i - l], temp[j - l])) {
-                arr[l + k] = temp[j - l];
-                j++;
+        int i = 0, j = 0, k = l;
+        while (i < left.length && j < right.length) {
+            if (!isGreaterThan(left[i], right[j])) {
+                arr[k++] = left[i++];
             } else {
-                arr[l + k] = temp[i - l];
-                i++;
+                arr[k++] = right[j++];
             }
-            k++;
         }
 
-        while (i <= m) {
-            arr[l + k] = temp[i - l];
-            i++;
-            k++;
+        while (i < left.length) {
+            arr[k++] = left[i++];
         }
 
-        while (j <= r) {
-            arr[l + k] = temp[j - l];
-            j++;
-            k++;
+        while (j < right.length) {
+            arr[k++] = right[j++];
         }
     }
 
@@ -52,12 +41,8 @@ class Sorter {
     }
 
     public static boolean isGreaterThan(String str1, String str2) {
-        if (str1.charAt(0) != str2.charAt(0)) {
-            return str1.charAt(0) > str2.charAt(0);
-        }
-        if (str1.length() == 1 || str2.length() == 1) {
-            return str1.length() > str2.length();
-        }
-        return str1.charAt(1) > str2.charAt(1);
+        return str1.charAt(0) == str2.charAt(0)
+                ? str1.charAt(1) > str2.charAt(1)
+                : str1.charAt(0) > str2.charAt(0);
     }
 }
